@@ -6,65 +6,9 @@ matrix:
   exclude:
     - os: linux
   include:
-    - os: linux
-      env: FLAVOR=linux CXX=g++-4.9 BUILDTYPE=Release
-      addons:
-        apt:
-          sources: [ 'ubuntu-toolchain-r-test' ]
-          packages: [ 'gdb', 'g++-4.9', 'gcc-4.9', 'libllvm3.4', 'xutils-dev', 'libxxf86vm-dev', 'x11proto-xf86vidmode-dev', 'mesa-utils' ]
-    - os: linux
-      env: FLAVOR=linux CXX=clang++-3.5 BUILDTYPE=Debug
-      addons:
-        apt:
-          sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5' ]
-          packages: [ 'gdb', 'clang-3.5', 'libstdc++-4.9-dev', 'libstdc++6', 'libllvm3.4', 'xutils-dev', 'libxxf86vm-dev', 'x11proto-xf86vidmode-dev', 'mesa-utils' ]
-    - os: linux
-      env: FLAVOR=linux CXX=clang++-3.5 BUILDTYPE=Release
-      addons:
-        apt:
-          sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5' ]
-          packages: [ 'gdb', 'clang-3.5', 'libstdc++-4.9-dev', 'libstdc++6', 'libllvm3.4', 'xutils-dev', 'libxxf86vm-dev', 'x11proto-xf86vidmode-dev', 'mesa-utils' ]
-    - os: osx
-      osx_image: beta-xcode6.3
-      env: FLAVOR=osx BUILDTYPE=Debug
     - os: osx
       osx_image: beta-xcode6.3
       env: FLAVOR=ios BUILDTYPE=Release
-    - os: linux
-      env: FLAVOR=android ANDROID_ABI=arm-v7 BUILDTYPE=Release
-      android:
-        components: [ 'build-tools-22.0.1', 'android-22', 'extra' ]
-      addons:
-        apt:
-          packages: [ 'lib32stdc++6' ]
-    - os: linux
-      env: FLAVOR=android ANDROID_ABI=arm-v7 BUILDTYPE=Debug
-      android:
-        components: [ 'build-tools-22.0.1', 'android-22', 'extra' ]
-      addons:
-        apt:
-          packages: [ 'lib32stdc++6' ]
-    - os: linux
-      env: FLAVOR=android ANDROID_ABI=arm-v8 BUILDTYPE=Release
-      android:
-        components: [ 'build-tools-22.0.1', 'android-22', 'extra' ]
-      addons:
-        apt:
-          packages: [ 'lib32stdc++6' ]
-    - os: linux
-      env: FLAVOR=android ANDROID_ABI=x86 BUILDTYPE=Release
-      android:
-        components: [ 'build-tools-22.0.1', 'android-22', 'extra' ]
-      addons:
-        apt:
-          packages: [ 'lib32stdc++6' ]
-    - os: linux
-      env: FLAVOR=android ANDROID_ABI=mips BUILDTYPE=Release
-      android:
-        components: [ 'build-tools-22.0.1', 'android-22', 'extra' ]
-      addons:
-        apt:
-          packages: [ 'lib32stdc++6' ]
 
 env:
   global:
