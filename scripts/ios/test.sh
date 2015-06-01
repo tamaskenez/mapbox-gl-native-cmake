@@ -4,10 +4,7 @@ set -e
 set -o pipefail
 set -u
 
-xcodebuild -showsdks
-instruments -s devices
-
-xcodebuild \
+xctool \
     -project ./test/ios/ios-tests.xcodeproj \
     -scheme 'Mapbox GL Tests' \
     -sdk iphonesimulator8.3 \
