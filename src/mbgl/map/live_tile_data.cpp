@@ -1,10 +1,8 @@
 #include <mbgl/map/annotation.hpp>
 #include <mbgl/map/live_tile_data.hpp>
 #include <mbgl/map/live_tile.hpp>
-#include <mbgl/map/tile_parser.hpp>
-#include <mbgl/map/source.hpp>
-#include <mbgl/map/vector_tile.hpp>
-#include <mbgl/platform/log.hpp>
+#include <mbgl/util/worker.hpp>
+#include <mbgl/util/work_request.hpp>
 
 using namespace mbgl;
 
@@ -26,28 +24,35 @@ LiveTileData::~LiveTileData() {
     cancel();
 }
 
-void LiveTileData::parse() {
-    if (getState() != State::loaded) {
-        return;
+bool LiveTileData::reparse(Worker&, std::function<void()> callback) {
+    if (!mayStartParsing()) {
+        return false;
     }
 
-    const LiveTile* tile = annotationManager.getTile(id);
-
-    if (tile) {
-        try {
-            // Parsing creates state that is encapsulated in TileParser. While parsing,
-            // the TileParser object writes results into this objects. All other state
-            // is going to be discarded afterwards.
-            TileParser parser(*tile, *this, style);
-            parser.parse();
-        } catch (const std::exception& ex) {
-            Log::Error(Event::ParseTile, "Live-parsing [%d/%d/%d] failed: %s", id.z, id.x, id.y, ex.what());
-            setState(State::obsolete);
+    workRequest = worker.send([this] {
+        if (getState() != State::loaded) {
             return;
         }
-    }
 
-    if (getState() != State::obsolete) {
-        setState(State::parsed);
-    }
+        const LiveTile* tile = annotationManager.getTile(id);
+
+        if (!tile) {
+            setState(State::parsed);
+            return;
+        }
+
+        TileParseResult result = workerData.parse(*tile);
+
+        if (getState() == TileData::State::obsolete) {
+            return;
+        } else if (result.is<State>()) {
+            setState(result.get<State>());
+        } else {
+            setError(result.get<std::string>());
+        }
+
+        endParsing();
+    }, callback);
+
+    return true;
 }
