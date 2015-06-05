@@ -5,10 +5,7 @@
 #include <mbgl/map/tile_data.hpp>
 #include <mbgl/geometry/elements_buffer.hpp>
 #include <mbgl/geometry/fill_buffer.hpp>
-//#include <mbgl/geometry/icon_buffer.hpp>
 #include <mbgl/geometry/line_buffer.hpp>
-//#include <mbgl/geometry/text_buffer.hpp>
-//#include <mbgl/geometry/collision_box_buffer.hpp>
 #include <mbgl/util/noncopyable.hpp>
 
 #include <memory>
