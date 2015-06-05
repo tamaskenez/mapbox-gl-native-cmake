@@ -11,6 +11,7 @@ class Painter;
 class SourceInfo;
 class StyleLayer;
 class TexturePool;
+class WorkRequest;
 
 class RasterTileData : public TileData {
 public:
@@ -23,12 +24,21 @@ public:
 
     bool reparse(Worker&, std::function<void ()> callback) override;
 
-    void parse();
+    void cancel() override;
+
     Bucket* getBucket(StyleLayer const &layer_desc) override;
 
-protected:
+private:
+    const SourceInfo& source;
+    Environment& env;
+
+    Request *req = nullptr;
+    std::string data;
+
     StyleLayoutRaster layout;
     RasterBucket bucket;
+
+    std::unique_ptr<WorkRequest> workRequest;
 };
 
 }

@@ -10,6 +10,7 @@
 #include <mbgl/util/worker.hpp>
 #include <mbgl/util/work_request.hpp>
 #include <mbgl/style/style.hpp>
+#include <mbgl/map/environment.hpp>
 
 using namespace mbgl;
 
@@ -18,7 +19,9 @@ VectorTileData::VectorTileData(const TileID& id_,
                                const SourceInfo& source_,
                                float angle,
                                bool collisionDebug)
-    : TileData(id_, source_),
+    : TileData(id_),
+      source(source_),
+      env(Environment::Get()),
       worker(style_.workers),
       workerData(id_,
                  style_,
@@ -101,7 +104,9 @@ size_t VectorTileData::countBuckets() const {
 }
 
 void VectorTileData::setState(const State& state_) {
-    TileData::setState(state_);
+    assert(!isImmutable());
+
+    state = state_;
 
     if (isImmutable()) {
         workerData.collision->reset(0, 0);
@@ -137,4 +142,28 @@ void VectorTileData::endRedoPlacement() {
     }
     redoingPlacement = false;
     redoPlacement();
+}
+
+void VectorTileData::cancel() {
+    if (state != State::obsolete) {
+        state = State::obsolete;
+    }
+    if (req) {
+        env.cancelRequest(req);
+        req = nullptr;
+    }
+    workRequest.reset();
+}
+
+bool VectorTileData::mayStartParsing() {
+    return !parsing.test_and_set(std::memory_order_acquire);
+}
+
+void VectorTileData::endParsing() {
+    parsing.clear(std::memory_order_release);
+}
+
+void VectorTileData::setError(const std::string& message) {
+    error = message;
+    setState(State::obsolete);
 }
