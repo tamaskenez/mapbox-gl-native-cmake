@@ -21,7 +21,6 @@ VectorTileData::VectorTileData(const TileID& id_,
                                bool collisionDebug)
     : TileData(id_),
       source(source_),
-      env(Environment::Get()),
       worker(style_.workers),
       workerData(id_,
                  style_,
@@ -35,8 +34,6 @@ VectorTileData::VectorTileData(const TileID& id_,
 }
 
 VectorTileData::~VectorTileData() {
-    // Cancel in most derived class destructor so that worker tasks are joined before
-    // any member data goes away.
     cancel();
 }
 
@@ -46,13 +43,14 @@ void VectorTileData::request(Worker&,
     std::string url = source.tileURL(id, pixelRatio);
     state = State::loading;
 
-    req = env.request({ Resource::Kind::Tile, url }, [url, callback, this](const Response &res) {
+    req = Environment::Get().request({ Resource::Kind::Tile, url }, [url, callback, this](const Response &res) {
         req = nullptr;
 
         if (res.status != Response::Successful) {
             std::stringstream message;
             message <<  "Failed to load [" << url << "]: " << res.message;
-            setError(message.str());
+            error = message.str();
+            state = State::obsolete;
             callback();
             return;
         }
@@ -65,7 +63,7 @@ void VectorTileData::request(Worker&,
 }
 
 bool VectorTileData::reparse(Worker&, std::function<void()> callback) {
-    if (!mayStartParsing()) {
+    if (parsing.test_and_set(std::memory_order_acquire)) {
         return false;
     }
 
@@ -80,12 +78,13 @@ bool VectorTileData::reparse(Worker&, std::function<void()> callback) {
         if (getState() == TileData::State::obsolete) {
             return;
         } else if (result.is<State>()) {
-            setState(result.get<State>());
+            state = result.get<State>();
         } else {
-            setError(result.get<std::string>());
+            error = result.get<std::string>();
+            state = State::obsolete;
         }
 
-        endParsing();
+        parsing.clear(std::memory_order_release);
     }, callback);
 
     return true;
@@ -101,16 +100,6 @@ Bucket* VectorTileData::getBucket(const StyleLayer& layer) {
 
 size_t VectorTileData::countBuckets() const {
     return workerData.countBuckets();
-}
-
-void VectorTileData::setState(const State& state_) {
-    assert(!isImmutable());
-
-    state = state_;
-
-    if (isImmutable()) {
-        workerData.collision->reset(0, 0);
-    }
 }
 
 void VectorTileData::redoPlacement() {
@@ -149,21 +138,8 @@ void VectorTileData::cancel() {
         state = State::obsolete;
     }
     if (req) {
-        env.cancelRequest(req);
+        Environment::Get().cancelRequest(req);
         req = nullptr;
     }
     workRequest.reset();
-}
-
-bool VectorTileData::mayStartParsing() {
-    return !parsing.test_and_set(std::memory_order_acquire);
-}
-
-void VectorTileData::endParsing() {
-    parsing.clear(std::memory_order_release);
-}
-
-void VectorTileData::setError(const std::string& message) {
-    error = message;
-    setState(State::obsolete);
 }
