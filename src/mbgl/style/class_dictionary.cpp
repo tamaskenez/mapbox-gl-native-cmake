@@ -2,6 +2,8 @@
 
 #include <uv.h>
 
+#include <boost/thread/tss.hpp>
+
 namespace mbgl {
 
 ClassDictionary::ClassDictionary() {}
@@ -9,20 +11,16 @@ ClassDictionary::ClassDictionary() {}
 ClassDictionary &ClassDictionary::Get() {
     // Note: We should eventually switch to uv_key_* functions, but libuv 0.10 doesn't have these
     // yet. Instead, we're using the pthread functions directly for now.
-    static pthread_once_t store_once = PTHREAD_ONCE_INIT;
-    static pthread_key_t store_key;
+    static boost::thread_specific_ptr<ClassDictionary> store_key(
+        [](ClassDictionary *ptr) {
+            delete ptr;
+        }
+    );
 
-    // Create the key.
-    pthread_once(&store_once, []() {
-        pthread_key_create(&store_key, [](void *ptr) {
-            delete reinterpret_cast<ClassDictionary *>(ptr);
-        });
-    });
-
-    ClassDictionary *ptr = reinterpret_cast<ClassDictionary *>(pthread_getspecific(store_key));
+    ClassDictionary *ptr = store_key.get();
     if (ptr == nullptr) {
         ptr = new ClassDictionary();
-        pthread_setspecific(store_key, ptr);
+        store_key.reset(ptr);
     }
 
     return *ptr;
