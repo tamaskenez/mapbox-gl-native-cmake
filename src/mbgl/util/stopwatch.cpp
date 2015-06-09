@@ -7,6 +7,8 @@
 #include <atomic>
 
 using namespace mbgl::util;
+using mbgl::Event;
+using mbgl::EventSeverity;
 
 stopwatch::stopwatch(Event event_)
     : event(event_), start(Clock::now()) {}

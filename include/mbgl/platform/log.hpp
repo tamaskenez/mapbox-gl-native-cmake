@@ -55,7 +55,7 @@ public:
     static inline void Record(EventSeverity severity, Event event, Args&& ...args) {
         if (!includes(severity, disabledEventSeverities) &&
             !includes(event, disabledEvents) &&
-            !includes({ severity, event }, disabledEventPermutations)) {
+            !includes<EventPermutation>({ severity, event }, disabledEventPermutations)) {
                 record(severity, event, ::std::forward<Args>(args)...);
         }
     }
