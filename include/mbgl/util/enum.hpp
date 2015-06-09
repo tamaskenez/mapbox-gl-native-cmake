@@ -12,7 +12,12 @@ struct EnumValue {
     const char *name;
 };
 
-template <typename EnumName, const EnumValue<EnumName> *names, const size_t length>
+#ifdef _MSC_VER
+    #define names (EnumName_names_wrapper().names)
+    template <typename EnumName, typename EnumName_names_wrapper, const size_t length>
+#else
+    template <typename EnumName, const EnumValue<EnumName> *names, const size_t length>
+#endif
 struct Enum {
     using Type = EnumName;
     Type value;
@@ -43,11 +48,33 @@ public:
 
     inline constexpr operator Type() const { return value; }
 };
+#ifdef _MSC_VER
+    #undef names
+#endif
 
-#define MBGL_DEFINE_ENUM_CLASS(name, type, strings...) \
-    const constexpr ::mbgl::EnumValue<type> type##_names[] = strings; \
-    using name = ::mbgl::Enum<type, type##_names, sizeof(type##_names) / sizeof(::mbgl::EnumValue<type>)>; \
-    inline std::ostream& operator<<(std::ostream& os, type t) { return os << name(t).str(); }
+#ifdef _MSC_VER
+    #define MBGL_DEFINE_ENUM_NAMES_WRAPPER(type, ...)                       \
+    struct type##_names_wrapper                                             \
+    {                                                                       \
+        type##_names_wrapper()                                              \
+        {                                                                   \
+            const constexpr ::mbgl::EnumValue<type> names[] = __VA_ARGS__;  \
+            this->names = names;                                            \
+        }                                                                   \
+        const ::mbgl::EnumValue<type>* names;                               \
+    };
+
+    #define MBGL_DEFINE_ENUM_CLASS(name, type, ...) \
+        MBGL_DEFINE_ENUM_NAMES_WRAPPER(type, __VA_ARGS__) \
+        const constexpr ::mbgl::EnumValue<type> type##_names[] = __VA_ARGS__; \
+        using name = ::mbgl::Enum<type, type##_names_wrapper, sizeof(type##_names) / sizeof(::mbgl::EnumValue<type>)>; \
+        inline std::ostream& operator<<(std::ostream& os, type t) { return os << name(t).str(); }
+#else
+    #define MBGL_DEFINE_ENUM_CLASS(name, type, ...) \
+        const constexpr ::mbgl::EnumValue<type> type##_names[] = __VA_ARGS__; \
+        using name = ::mbgl::Enum<type, type##_names, sizeof(type##_names) / sizeof(::mbgl::EnumValue<type>)>; \
+        inline std::ostream& operator<<(std::ostream& os, type t) { return os << name(t).str(); }
+#endif
 
 }
 
