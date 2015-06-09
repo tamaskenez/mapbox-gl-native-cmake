@@ -5,7 +5,9 @@
 #include <sstream>
 #include <fstream>
 
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 
 namespace mbgl {
 namespace util {
