@@ -5,6 +5,10 @@
 #include <mbgl/util/noncopyable.hpp>
 
 #include <uv.h>
+#ifdef _MSC_VER
+    #undef near
+    #undef far
+#endif
 
 #include <functional>
 #include <cassert>
