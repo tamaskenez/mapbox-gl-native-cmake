@@ -23,6 +23,8 @@
     #define GL_GLEXT_PROTOTYPES
     #include <GLES2/gl2.h>
     #include <GLES2/gl2ext.h>
+#elif HAVE_GLEW
+    #include "GL/glew.h"
 #else
     #define GL_GLEXT_PROTOTYPES
     #include <GL/gl.h>

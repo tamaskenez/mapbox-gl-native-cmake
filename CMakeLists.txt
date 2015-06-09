@@ -27,6 +27,17 @@ find_package(OpenGL REQUIRED)
 find_package(Boost REQUIRED)
 add_definitions(-DBOOST_ALL_NO_LIB)
 
+if(WIN32)
+    find_package(GLEW REQUIRED)
+    add_definitions(-DHAVE_GLEW
+        -DNOMINMAX # don't define min, max in windows.h
+        -D_USE_MATH_DEFINES # define math constants in math.h
+        -DWIN32_LEAN_AND_MEAN -DVC_EXTRALEAN # leave out parts of win
+        /wd4068 # disable warning: unknown pragma
+        /wd4996 # disable deprecation warnings
+    )
+endif()
+
 # shaders
 file(GLOB_RECURSE glsl_files src/*.glsl)
 set(generated_shader_sources
@@ -114,6 +125,9 @@ target_include_directories(core
     PUBLIC include
     PRIVATE src ${Boost_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
 target_compile_definitions(core PRIVATE ${Boost_DEFINITIONS})
+if(GLEW_FOUND)
+    target_compile_definitions(core PRIVATE GLEW::GLEW)
+endif()
 
 # standalone
 #{
