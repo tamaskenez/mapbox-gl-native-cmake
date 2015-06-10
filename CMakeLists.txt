@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
 project(mbgl)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # options
 set(PRODUCT_DIR "mapbox-gl-native" CACHE PATH "PRODUCT_DIR")
@@ -7,17 +10,18 @@ set(PRODUCT_DIR "mapbox-gl-native" CACHE PATH "PRODUCT_DIR")
 # prerequisites
 find_package(Git REQUIRED)
 
-find_package(PythonInterp 2 EXACT QUIET)
+set(python_version 2 EXACT)
+find_package(PythonInterp ${python_version} QUIET)
 if(WIN32 AND NOT PYTHONINTERP_FOUND)
     # a second desperate hack to find python2x
     set(cmake_program_path_saved "${CMAKE_PROGRAM_PATH}")
     file(GLOB python_dirs c:/python2*)
     list(APPEND CMAKE_PROGRAM_PATH ${python_dirs})
     unset(PYTHON_EXECUTABLE CACHE)
-    find_package(PythonInterp 2 EXACT REQUIRED)
+    find_package(PythonInterp ${python_version} REQUIRED)
     list(REMOVE_AT CMAKE_PROGRAM_PATH -1)
 else()
-    find_package(PythonInterp 2 EXACT REQUIRED)
+    find_package(PythonInterp ${python_version} REQUIRED)
 endif()
 
 find_package(libuv REQUIRED)
