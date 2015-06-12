@@ -5,37 +5,51 @@ set(platform ${PROJECT_SOURCE_DIR}/platform)
 set(iplatform ${PROJECT_SOURCE_DIR}/include/mbgl/platform)
 
 if(host STREQUAL "linux")
-	set(sources
-		${PROJECT_SOURCE_DIR}/linux/main.cpp
-		${platform}/default/settings_json.cpp
-		${iplatform}/default/glfw_view.hpp
-		${platform}/default/glfw_view.cpp
-		${platform}/default/log_stderr.cpp
-		${platform}/default/default_styles.hpp
-		${platform}/default/default_styles.cpp
-		)
+    set(sources
+        ${PROJECT_SOURCE_DIR}/linux/main.cpp
+        ${platform}/default/settings_json.cpp
+        ${iplatform}/default/glfw_view.hpp
+        ${platform}/default/glfw_view.cpp
+        ${platform}/default/log_stderr.cpp
+        ${platform}/default/default_styles.hpp
+        ${platform}/default/default_styles.cpp
+        )
 endif()
 if(host STREQUAL "windows")
-	set(sources
-		${PROJECT_SOURCE_DIR}/linux/main.cpp
-		${platform}/default/settings_json.cpp
-		${iplatform}/default/glfw_view.hpp
-		${platform}/default/glfw_view.cpp
-		${platform}/default/log_stderr.cpp
-		${platform}/default/default_styles.hpp
-		${platform}/default/default_styles.cpp
-		)
+    set(sources
+        ${PROJECT_SOURCE_DIR}/linux/main.cpp
+        ${platform}/default/settings_json.cpp
+        ${iplatform}/default/glfw_view.hpp
+        ${platform}/default/glfw_view.cpp
+        ${platform}/default/log_stderr.cpp
+        ${platform}/default/default_styles.hpp
+        ${platform}/default/default_styles.cpp
+        )
+endif()
+
+if(http_lib STREQUAL "curl")
+    include(http-curl.cmake)
+endif()
+
+if(host STREQUAL "osx" OR host STREQUAL "ios")
+    include(http-nsurl.cmake)
+endif()
+
+if(asset_lib STREQUAL "fs")
+    include(asset-fs.cmake)
+endif()
+
+if(asset_lib STREQUAL "zip")
+    include(asset-zip.cmake)
 endif()
 
 add_executable(app ${sources})
-target_link_libraries(app core platform)
+target_link_libraries(app core platform http asset)
 
 #linux
 #
 #linux
 #      'dependencies': [
-#        '../mbgl.gyp:http-<(http_lib)',
-#        '../mbgl.gyp:asset-<(asset_lib)',
 #        '../mbgl.gyp:cache-<(cache_lib)',
 #        '../mbgl.gyp:copy_styles',
 #        '../mbgl.gyp:copy_certificate_bundle',
@@ -43,22 +57,16 @@ target_link_libraries(app core platform)
 #
 #ios      'dependencies': [
 #        '../mbgl.gyp:bundle_styles',
-#        '../mbgl.gyp:http-<(http_lib)',
-#        '../mbgl.gyp:asset-<(asset_lib)',
 #        '../mbgl.gyp:cache-<(cache_lib)',
 #      ],
 #
 #macosx
 #     'dependencies': [
 #        '../mbgl.gyp:bundle_styles',
-#        '../mbgl.gyp:http-<(http_lib)',
-#        '../mbgl.gyp:asset-<(asset_lib)',
 #        '../mbgl.gyp:cache-<(cache_lib)',
 #      ],
 #
 #android-lib       'dependencies': [
-#        '../mbgl.gyp:http-<(http_lib)',
-#        '../mbgl.gyp:asset-<(asset_lib)',
 #        '../mbgl.gyp:cache-<(cache_lib)',
 #      ],
 #

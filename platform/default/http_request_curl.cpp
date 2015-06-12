@@ -19,6 +19,7 @@
 #include <map>
 #include <cassert>
 #include <cstring>
+#include <cctype>
 
 void handleError(CURLMcode code) {
     if (code != CURLM_OK) {

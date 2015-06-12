@@ -13,6 +13,8 @@
 #include <cassert>
 #include <forward_list>
 
+#include <fcntl.h> // for O_RDONLY
+
 namespace mbgl {
 
 class AssetZipContext : public AssetContext {
@@ -123,7 +125,12 @@ void AssetRequest::openZipArchive() {
 
     // We're using uv_fs_open first to obtain a file descriptor. Then, uv_zip_fdopen will operate
     // on a read-only file.
-    uv_fs_open(context.loop, req, root.c_str(), O_RDONLY, S_IRUSR, [](uv_fs_t *fsReq) {
+#ifdef _MSC_VER
+    int mode = _S_IREAD;
+#else
+    int mode = S_IRUSR;
+#endif
+    uv_fs_open(context.loop, req, root.c_str(), O_RDONLY, mode, [](uv_fs_t *fsReq) {
         if (fsReq->result < 0) {
             auto impl = reinterpret_cast<AssetRequest *>(fsReq->data);
             impl->notifyError(uv::getFileRequestError(fsReq));
