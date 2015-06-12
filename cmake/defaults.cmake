@@ -1,0 +1,95 @@
+
+#### Configuration defaults ####################################################
+
+if(APPLE AND NOT IOS)
+    set(default_host osx)
+elseif(IOS)
+    set(default_host ios)
+elseif(ANDROID)
+    set(default_host android)
+elseif(UNIX)
+    set(default_host linux)
+elseif(WIN32)
+    set(default_host windows)
+else()
+    set(default_host "")
+endif()
+
+set(MBGL_HOST "${default_host}" CACHE STRING "default: ${default_host}")
+set(host ${MBGL_HOST})
+
+if(host STREQUAL "osx")
+    #ENV_osx = MASON_PLATFORM=osx
+    #CONFIG_osx = -Dhost=osx -Iconfig/osx.gypi -Dinstall_prefix=$(PREFIX)
+    set(default_headless_lib cgl)
+    set(default_platform_lib osx)
+    set(default_asset_lib fs)
+    set(default_http_lib nsurl)
+    set(default_cache_lib sqlite)
+elseif(host STREQUAL "ios")
+    #ENV_ios = MASON_PLATFORM=ios
+    #CONFIG_ios = -Dhost=ios -Iconfig/ios.gypi -Dinstall_prefix=$(PREFIX)
+    set(default_headless_lib none)
+    set(default_platform_lib ios)
+    set(default_asset_lib fs)
+    set(default_http_lib nsurl)
+    set(default_cache_lib sqlite)
+elseif(host STREQUAL "android")
+    #ENV_android-arm-v8 = $(shell MASON_ANDROID_ABI=arm-v8 ./scripts/android/toolchain.sh)
+    #CONFIG_android-arm-v8 = -Dhost=android -Iconfig/android-arm-v8.gypi
+    #ENV_android-arm-v7 = $(shell MASON_ANDROID_ABI=arm-v7 ./scripts/android/toolchain.sh)
+    #CONFIG_android-arm-v7 = -Dhost=android -Iconfig/android-arm-v7.gypi
+    #ENV_android-arm-v5 = $(shell MASON_ANDROID_ABI=arm-v5 ./scripts/android/toolchain.sh)
+    #CONFIG_android-arm-v5 = -Dhost=android -Iconfig/android-arm-v5.gypi
+    #ENV_android-x86 = $(shell MASON_ANDROID_ABI=x86 ./scripts/android/toolchain.sh)
+    #CONFIG_android-x86 = -Dhost=android -Iconfig/android-x86.gypi
+    #ENV_android-mips = $(shell MASON_ANDROID_ABI=mips ./scripts/android/toolchain.sh)
+    #CONFIG_android-mips = -Dhost=android -Iconfig/android-mips.gypi
+    #ENV_android-mips-64 = $(shell MASON_ANDROID_ABI=mips-64 ./scripts/android/toolchain.sh)
+    #CONFIG_android-mips-64 = -Dhost=android -Iconfig/android-mips-64.gypi
+    set(default_headless_lib none)
+    set(default_platform_lib android)
+    set(default_asset_lib zip)
+    set(default_http_lib curl)
+    set(default_cache_lib sqlite)
+elseif(host STREQUAL "linux")
+    #ENV_linux = MASON_PLATFORM=linux
+    #CONFIG_linux = -Dhost=linux -Iconfig/linux.gypi -Dinstall_prefix=$(PREFIX)
+    set(default_headless_lib glx)
+    set(default_platform_lib linux)
+    set(default_asset_lib fs)
+    set(default_http_lib curl)
+    set(default_cache_lib sqlite)
+elseif(host STREQUAL "windows")
+    set(default_headless_lib glx)
+    set(default_platform_lib windows)
+    set(default_asset_lib zip)
+    set(default_http_lib curl)
+    set(default_cache_lib sqlite)
+else()
+    message(FATAL_ERROR "Unknown host: \"${host}\"")
+endif()
+
+set(MBGL_HEADLESS "" CACHE STRING "")
+set(MBGL_PLATFORM "" CACHE STRING "")
+set(MBGL_ASSET "" CACHE STRING "")
+set(MBGL_HTTP "" CACHE STRING "")
+set(MBGL_CACHE "" CACHE STRING "")
+
+set_property(CACHE MBGL_HEADLESS PROPERTY HELPSTRING "leave empty for default = ${default_headless_lib}")
+set_property(CACHE MBGL_PLATFORM PROPERTY HELPSTRING "leave empty for default = ${default_platform_lib}")
+set_property(CACHE MBGL_ASSET    PROPERTY HELPSTRING "leave empty for default = ${default_asset_lib}")
+set_property(CACHE MBGL_HTTP     PROPERTY HELPSTRING "leave empty for default = ${default_http_lib}")
+set_property(CACHE MBGL_CACHE    PROPERTY HELPSTRING "leave empty for default = ${default_cache_lib}")
+
+set(headless_lib "${MBGL_HEADLESS}")
+set(platform_lib "${MBGL_PLATFORM}")
+set(asset_lib "${MBGL_ASSET}")
+set(http_lib "${MBGL_HTTP}")
+set(cache_lib "${MBGL_CACHE}")
+
+foreach(i headless_lib platform_lib asset_lib http_lib cache_lib)
+    if(NOT ${i})
+        set(${i} ${default_${i}})
+    endif()
+endforeach()
