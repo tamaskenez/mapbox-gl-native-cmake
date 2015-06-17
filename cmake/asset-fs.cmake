@@ -1,9 +1,13 @@
+find_package(Boost REQUIRED)
+
 add_library(asset
         ${PROJECT_SOURCE_DIR}/platform/default/asset_request_fs.cpp
         )
 target_include_directories(asset
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
   PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src
     ${Boost_INCLUDE_DIRS})
 

@@ -35,39 +35,30 @@ if(host STREQUAL "osx" OR host STREQUAL "ios")
     include(http-nsurl.cmake)
 endif()
 
-if(asset_lib STREQUAL "fs")
-    include(asset-fs.cmake)
-endif()
-
-if(asset_lib STREQUAL "zip")
-    include(asset-zip.cmake)
-endif()
+include(asset-${asset_lib}.cmake)
+include(cache-${cache_lib}.cmake)
 
 add_executable(app ${sources})
-target_link_libraries(app core platform http asset)
+target_link_libraries(app core platform http asset cache)
 
 #linux
 #
 #linux
 #      'dependencies': [
-#        '../mbgl.gyp:cache-<(cache_lib)',
 #        '../mbgl.gyp:copy_styles',
 #        '../mbgl.gyp:copy_certificate_bundle',
 #      ],
 #
 #ios      'dependencies': [
 #        '../mbgl.gyp:bundle_styles',
-#        '../mbgl.gyp:cache-<(cache_lib)',
 #      ],
 #
 #macosx
 #     'dependencies': [
 #        '../mbgl.gyp:bundle_styles',
-#        '../mbgl.gyp:cache-<(cache_lib)',
 #      ],
 #
 #android-lib       'dependencies': [
-#        '../mbgl.gyp:cache-<(cache_lib)',
 #      ],
 #
 #

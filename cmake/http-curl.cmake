@@ -1,13 +1,21 @@
 find_package(CURL REQUIRED)
+find_package(Boost REQUIRED)
+
 add_library(http
     ${platform}/default/http_request_curl.cpp)
-target_include_directories(http PRIVATE
-    ${CURL_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/src)
+
+target_include_directories(http
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
+        ${CURL_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS})
+
 target_link_libraries(http PRIVATE
     libuv ${CURL_LIBRARIES} ${Boost_LIBRARIES})
+
 target_compile_definitions(http
     PRIVATE
         ${CURL_DEFINITIONS} ${Boost_DEFINITIONS}
