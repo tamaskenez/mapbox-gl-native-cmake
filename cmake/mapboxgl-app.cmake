@@ -38,8 +38,21 @@ endif()
 include(asset-${asset_lib}.cmake)
 include(cache-${cache_lib}.cmake)
 
-add_executable(app ${sources})
-target_link_libraries(app core platform http asset cache)
+
+if(host STREQUAL "android")
+    add_library(android-lib ${sources})
+    set(t android-lib)
+else()
+    add_executable(app ${sources})
+    set(t app)
+endif()
+
+target_link_libraries(${t} core platform http asset cache)
+
+if(host MATCHES "^(linux|windows|macosx)$")
+    find_package(glfw3 REQUIRED)
+    target_link_libraries(${t} glfw)
+endif()
 
 #linux
 #

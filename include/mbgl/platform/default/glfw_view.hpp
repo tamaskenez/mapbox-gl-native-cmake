@@ -2,11 +2,14 @@
 #define MBGL_COMMON_GLFW_VIEW
 
 #include <mbgl/mbgl.hpp>
-
 #ifdef NVIDIA
 #define GLFW_INCLUDE_ES2
 #endif
+#ifdef HAVE_GLEW
+#include "GL/glew.h"
+#endif
 #include <GLFW/glfw3.h>
+
 
 class GLFWView : public mbgl::View {
 public:
