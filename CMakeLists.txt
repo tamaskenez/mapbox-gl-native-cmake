@@ -41,6 +41,9 @@ if(MSVC)
     add_library(libgen STATIC windows/libgen/libgen.c windows/libgen/libgen.h)
     target_include_directories(libgen PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/windows/libgen>)
+    add_library(getopt STATIC windows/getopt/getopt.cpp windows/getopt/getopt.h)
+    target_include_directories(getopt PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/windows/getopt>)
 endif()
 
 add_subdirectory(cmake)

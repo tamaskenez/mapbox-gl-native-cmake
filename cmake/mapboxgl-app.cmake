@@ -4,6 +4,8 @@ add_subdirectory(platform)
 set(platform ${PROJECT_SOURCE_DIR}/platform)
 set(iplatform ${PROJECT_SOURCE_DIR}/include/mbgl/platform)
 
+set(deps "")
+
 if(host STREQUAL "linux")
     set(sources
         ${PROJECT_SOURCE_DIR}/linux/main.cpp
@@ -25,6 +27,7 @@ if(host STREQUAL "windows")
         ${platform}/default/default_styles.hpp
         ${platform}/default/default_styles.cpp
         )
+    set(deps getopt)
 endif()
 
 if(http_lib STREQUAL "curl")
@@ -47,7 +50,7 @@ else()
     set(t app)
 endif()
 
-target_link_libraries(${t} core platform http asset cache)
+target_link_libraries(${t} core platform http asset cache ${deps})
 
 if(host MATCHES "^(linux|windows|macosx)$")
     find_package(glfw3 REQUIRED)
