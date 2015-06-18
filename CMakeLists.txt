@@ -38,9 +38,9 @@ else()
 endif()
 
 if(MSVC)
-    add_library(libgen STATIC windows/libgen.c windows/libgen.h)
+    add_library(libgen STATIC windows/libgen/libgen.c windows/libgen/libgen.h)
     target_include_directories(libgen PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/windows>)
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/windows/libgen>)
 endif()
 
 add_subdirectory(cmake)
