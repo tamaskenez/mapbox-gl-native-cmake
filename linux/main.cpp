@@ -58,12 +58,14 @@ int main(int argc, char *argv[]) {
 
     }
 
+#ifndef _MSC_VER
     // sigint handling
     struct sigaction sigIntHandler;
     sigIntHandler.sa_handler = quit_handler;
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
     sigaction(SIGINT, &sigIntHandler, NULL);
+#endif
 
     view = std::make_unique<GLFWView>();
 
