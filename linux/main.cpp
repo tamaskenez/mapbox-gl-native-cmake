@@ -31,16 +31,18 @@ void quit_handler(int) {
 int main(int argc, char *argv[]) {
     int fullscreen_flag = 0;
     std::string style;
+    std::string asset_root;
 
     const struct option long_options[] = {
         {"fullscreen", no_argument, &fullscreen_flag, 'f'},
         {"style", required_argument, 0, 's'},
+        { "root", required_argument, 0, 'r' },
         {0, 0, 0, 0}
     };
 
     while (true) {
         int option_index = 0;
-        int opt = getopt_long(argc, argv, "fs:", long_options, &option_index);
+        int opt = getopt_long(argc, argv, "fs:r:", long_options, &option_index);
         if (opt == -1) break;
         switch (opt)
         {
@@ -52,6 +54,9 @@ int main(int argc, char *argv[]) {
             break;
         case 's':
             style = std::string("asset://") + std::string(optarg);
+        case 'r':
+            asset_root = optarg;
+            break;
         default:
             break;
         }
@@ -70,7 +75,7 @@ int main(int argc, char *argv[]) {
     view = std::make_unique<GLFWView>();
 
     mbgl::SQLiteCache cache("/tmp/mbgl-cache.db");
-    mbgl::DefaultFileSource fileSource(&cache);
+    mbgl::DefaultFileSource fileSource(&cache, asset_root);
 
     // Set access token if present
     const char *token = getenv("MAPBOX_ACCESS_TOKEN");
