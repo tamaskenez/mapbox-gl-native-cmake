@@ -3,6 +3,7 @@ project(mbgl)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_DEBUG_POSTFIX _d)
 
 # options
 set(MBGL_PRODUCT_DIR "mapbox-gl-native" CACHE PATH "PRODUCT_DIR")
@@ -14,7 +15,7 @@ find_package(OpenGL REQUIRED)
 
 if(WIN32)
     find_package(GLEW REQUIRED)
-    add_definitions(-DHAVE_GLEW
+    add_definitions(-DHAVE_GLEW # needs to be investigated if -DHAVE_GLEW should be added to any INTERFACE
         -DNOMINMAX # don't define min, max in windows.h
         -D_USE_MATH_DEFINES # define math constants in math.h
         -DWIN32_LEAN_AND_MEAN -DVC_EXTRALEAN # leave out parts of win

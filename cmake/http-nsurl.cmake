@@ -1,7 +1,7 @@
 find_package(Boost REQUIRED)
 
 add_library(http ${platform}/darwin/http_request_nsurl.mm)
-
+set_target_properties(http PROPERTIES OUTPUT_NAME mbgl-http-nsurl)
 target_include_directories(http
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

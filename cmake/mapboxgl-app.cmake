@@ -49,6 +49,9 @@ else()
     add_executable(app ${sources})
     set(t app)
 endif()
+set_target_properties(${t} PROPERTIES
+    OUTPUT_NAME mapbox-gl
+    DEBUG_POSTFIX _d)
 
 target_link_libraries(${t} core platform http asset cache ${deps})
 

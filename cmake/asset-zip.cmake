@@ -5,6 +5,7 @@ add_library(asset
         ${PROJECT_SOURCE_DIR}/platform/default/asset_request_zip.cpp
         ${PROJECT_SOURCE_DIR}/platform/default/uv_zip.c
         )
+set_target_properties(asset PROPERTIES OUTPUT_NAME mbgl-asset-zip)
 target_include_directories(asset
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

@@ -1,7 +1,7 @@
 include(shaders.cmake)
 include(version.cmake)
 
-find_package(Boost REQUIRED thread)
+find_package(Boost REQUIRED thread system)
 add_definitions(-DBOOST_ALL_NO_LIB)
 
 set(include ${PROJECT_SOURCE_DIR}/include)
@@ -22,5 +22,5 @@ target_include_directories(core
     PRIVATE ${src} ${Boost_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
 target_compile_definitions(core PRIVATE ${Boost_DEFINITIONS})
 if(GLEW_FOUND)
-    target_compile_definitions(core PRIVATE GLEW::GLEW)
+    target_link_libraries(core PRIVATE GLEW::GLEW)
 endif()

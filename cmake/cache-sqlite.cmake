@@ -5,7 +5,7 @@ add_library(cache
         ${PROJECT_SOURCE_DIR}/platform/default/sqlite_cache.cpp
         ${PROJECT_SOURCE_DIR}/platform/default/sqlite3.hpp
         ${PROJECT_SOURCE_DIR}/platform/default/sqlite3.cpp)
-
+set_target_properties(cache PROPERTIES OUTPUT_NAME mbgl-cache-sqlite)
 target_include_directories(cache
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

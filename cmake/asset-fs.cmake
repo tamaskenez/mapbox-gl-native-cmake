@@ -3,6 +3,7 @@ find_package(Boost REQUIRED)
 add_library(asset
         ${PROJECT_SOURCE_DIR}/platform/default/asset_request_fs.cpp
         )
+set_target_properties(asset PROPERTIES OUTPUT_NAME mbgl-asset-fs)
 target_include_directories(asset
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

@@ -1,8 +1,8 @@
 find_package(CURL REQUIRED)
 find_package(Boost REQUIRED)
 
-add_library(http
-    ${platform}/default/http_request_curl.cpp)
+add_library(http ${platform}/default/http_request_curl.cpp)
+set_target_properties(http PROPERTIES OUTPUT_NAME mbgl-http-curl)
 
 target_include_directories(http
     PUBLIC
