@@ -58,7 +58,7 @@ public:
     {                                                                       \
         type##_names_wrapper()                                              \
         {                                                                   \
-            const constexpr ::mbgl::EnumValue<type> names[] = __VA_ARGS__;  \
+            static const constexpr ::mbgl::EnumValue<type> names[] = __VA_ARGS__;  \
             this->names = names;                                            \
         }                                                                   \
         const ::mbgl::EnumValue<type>* names;                               \
