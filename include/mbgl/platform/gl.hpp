@@ -71,7 +71,7 @@ public:
     }
 
     R operator()(Args... args) const {
-        return (*reinterpret_cast<R (*)(Args...)>(ptr))(std::forward<Args>(args)...);
+        return (*reinterpret_cast<R (GLAPIENTRY *)(Args...)>(ptr))(std::forward<Args>(args)...);
     }
 };
 
