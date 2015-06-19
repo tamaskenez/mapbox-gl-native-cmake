@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <limits>
+#include <fcntl.h> // for O_RDONLY
 
 namespace mbgl {
 
@@ -64,7 +65,12 @@ AssetRequest::AssetRequest(const Resource& resource_, Callback callback_, uv_loo
         path = assetRoot + "/" + mbgl::util::percentDecode(url.substr(8));
     }
 
-    uv_fs_open(loop, &req, path.c_str(), O_RDONLY, S_IRUSR, fileOpened);
+#ifdef _MSC_VER
+    const int mode = _S_IREAD;
+#else
+    const int mode = S_IRUSR;
+#endif
+    uv_fs_open(loop, &req, path.c_str(), O_RDONLY, mode, fileOpened);
 }
 
 void AssetRequest::fileOpened(uv_fs_t *req) {
