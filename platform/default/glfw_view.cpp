@@ -41,6 +41,7 @@ GLFWView::GLFWView(bool fullscreen_) : fullscreen(fullscreen_) {
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
 
     window = glfwCreateWindow(1024, 768, "Mapbox GL", monitor, NULL);
+
     if (!window) {
         glfwTerminate();
         mbgl::Log::Error(mbgl::Event::OpenGL, "failed to initialize window");
@@ -49,6 +50,17 @@ GLFWView::GLFWView(bool fullscreen_) : fullscreen(fullscreen_) {
 
     glfwSetWindowUserPointer(window, this);
     glfwMakeContextCurrent(window);
+
+#ifdef HAVE_GLEW
+    //this must be after glfwMakeContextCurrent
+    auto glew_err = glewInit();
+    if (GLEW_OK != glew_err) {
+        glfwTerminate();
+        mbgl::Log::Error(mbgl::Event::OpenGL, "failed to initialize glew: %s", glewGetErrorString(glew_err));
+        exit(1);
+    }
+#endif
+
     glfwSwapInterval(1);
 
     glfwSetCursorPosCallback(window, onMouseMove);
