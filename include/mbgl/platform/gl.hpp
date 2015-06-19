@@ -55,6 +55,12 @@ public:
     void (*ptr)();
 };
 
+#ifdef HAVE_GLEW
+#define MBGL_GLAPIENTRY GLAPIENTRY
+#else
+#define MBGL_GLAPIENTRY
+#endif
+
 template <class>
 class ExtensionFunction;
 
@@ -71,7 +77,7 @@ public:
     }
 
     R operator()(Args... args) const {
-        return (*reinterpret_cast<R (GLAPIENTRY *)(Args...)>(ptr))(std::forward<Args>(args)...);
+        return (*reinterpret_cast<R (MBGL_GLAPIENTRY *)(Args...)>(ptr))(std::forward<Args>(args)...);
     }
 };
 
