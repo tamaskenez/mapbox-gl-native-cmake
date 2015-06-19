@@ -154,7 +154,7 @@ endforeach()
 
 target_include_directories(platform INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
 
-if(TARGET libgen)
-  target_link_libraries(platform PRIVATE libgen)
+if(host STREQUAL "windows")
+  target_link_libraries(platform PRIVATE windows-libgen)
 endif()
 

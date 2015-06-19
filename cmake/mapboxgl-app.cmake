@@ -27,7 +27,7 @@ if(host STREQUAL "windows")
         ${platform}/default/default_styles.hpp
         ${platform}/default/default_styles.cpp
         )
-    set(deps getopt)
+    set(deps windows-getopt)
 endif()
 
 if(http_lib STREQUAL "curl")

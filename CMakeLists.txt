@@ -39,11 +39,11 @@ else()
 endif()
 
 if(MSVC)
-    add_library(libgen STATIC windows/libgen/libgen.c windows/libgen/libgen.h)
-    target_include_directories(libgen PUBLIC
+    add_library(windows-libgen STATIC windows/libgen/libgen.c windows/libgen/libgen.h)
+    target_include_directories(windows-libgen PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/windows/libgen>)
-    add_library(getopt STATIC windows/getopt/getopt.cpp windows/getopt/getopt.h)
-    target_include_directories(getopt PUBLIC
+    add_library(windows-getopt STATIC windows/getopt/getopt.cpp windows/getopt/getopt.h)
+    target_include_directories(windows-getopt PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/windows/getopt>)
 endif()
 
