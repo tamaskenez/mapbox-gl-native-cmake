@@ -16,6 +16,10 @@ char *dirname(char *path) {
     _splitpath(path, drive, dir, fname, ext);
     _makepath(result, drive, dir, NULL, NULL);
 
+    int l = strlen(result);
+    if (l > 1 && (result[l - 1] == '/' || result[l - 1] == '\\') && result[l-2] != ':')
+        result[l - 1] = 0;
+
     return result;
 }
 
