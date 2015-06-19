@@ -50,7 +50,7 @@ int getopt_long(int argc, char *const *argv,
     if (result != -1) {
         if (has_arg) {
             if (++optind < argc)
-                optarg = argv[++optind];
+                optarg = argv[optind];
             else {
                 result = '?';
                 optopt = result;
