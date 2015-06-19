@@ -1,6 +1,8 @@
 /* include its own (compatibility) header not the unix one */
 #include "libgen.h"
+
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
