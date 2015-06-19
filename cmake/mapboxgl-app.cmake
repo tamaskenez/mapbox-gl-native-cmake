@@ -44,21 +44,33 @@ include(cache-${cache_lib}.cmake)
 
 if(host STREQUAL "android")
     add_library(android-lib ${sources})
-    set(t android-lib)
+    set(mbgl_target android-lib)
 else()
     add_executable(app ${sources})
-    set(t app)
+    set(mbgl_target app)
 endif()
-set_target_properties(${t} PROPERTIES
+set_target_properties(${mbgl_target} PROPERTIES
     OUTPUT_NAME mapbox-gl
     DEBUG_POSTFIX _d)
 
-target_link_libraries(${t} core platform http asset cache ${deps})
+target_link_libraries(${mbgl_target} core platform http asset cache ${deps})
 
 if(host MATCHES "^(linux|windows|macosx)$")
     find_package(glfw3 REQUIRED)
-    target_link_libraries(${t} glfw)
+    target_link_libraries(${mbgl_target} glfw)
 endif()
+
+# The next target is needed to avoid cyclic dependencies while
+# using a the TARGET_FILE_DIR generator expression to obtain
+# the directory where the mbgl_target is built
+# Hopefully the 2 targets will be built into the same directory.
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy-exe.cpp "int main(int,char*[]){return 0;}")
+add_executable(dummy-exe-in-mbgl-target-dir EXCLUDE_FROM_ALL ${CMAKE_CURRENT_BINARY_DIR}/dummy-exe.cpp)
+
+include(certificates.cmake)
+add_dependencies(${mbgl_target} copy_certificate_bundle)
+include(styles.cmake)
+add_dependencies(${mbgl_target} copy_styles)
 
 #linux
 #
