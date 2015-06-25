@@ -53,6 +53,10 @@ set_target_properties(${mbgl_target} PROPERTIES
     OUTPUT_NAME mapbox-gl
     DEBUG_POSTFIX _d)
 
+if(HAVE_GLEW)
+    list(APPEND deps GLEW::GLEW)
+endif()
+
 target_link_libraries(${mbgl_target} core platform http asset cache ${deps})
 
 if(host MATCHES "^(linux|windows|macosx)$")

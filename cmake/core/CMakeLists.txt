@@ -22,5 +22,5 @@ target_include_directories(core
     PRIVATE ${src} ${Boost_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
 target_compile_definitions(core PRIVATE ${Boost_DEFINITIONS})
 if(GLEW_FOUND)
-    target_link_libraries(core PRIVATE GLEW::GLEW)
+    target_link_libraries(core PUBLIC GLEW::GLEW)
 endif()

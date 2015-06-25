@@ -99,7 +99,7 @@ if(platform_lib STREQUAL "linux")
         ${platform}/default/png_reader.cpp
         ${platform}/default/jpeg_reader.cpp
     )
-  set(deps PNG JPEG::JPEG libuv Boost nunicode)
+  set(deps PNG JPEG::JPEG libuv Boost nunicode::nu)
   set(include_dirs PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 endif()
 if(platform_lib STREQUAL "android" AND host STREQUAL "android")
@@ -116,7 +116,7 @@ if(platform_lib STREQUAL "android" AND host STREQUAL "android")
     ${platform}/default/png_reader.cpp
     ${platform}/default/jpeg_reader.cpp
     )
-  set(deps PNG JPEG::JPEG libuv nunicode Boost)
+  set(deps PNG JPEG::JPEG libuv nunicode::nu Boost)
   set(include_dirs PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 endif()
 if(platform_lib STREQUAL "windows" AND host STREQUAL "windows")
@@ -134,7 +134,7 @@ if(platform_lib STREQUAL "windows" AND host STREQUAL "windows")
         ${platform}/default/png_reader.cpp
         ${platform}/default/jpeg_reader.cpp
     )
-  set(deps PNG JPEG::JPEG libuv Boost nunicode)
+  set(deps PNG JPEG::JPEG libuv Boost nunicode::nu)
   set(include_dirs PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 endif()
 

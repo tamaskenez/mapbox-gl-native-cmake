@@ -14,7 +14,7 @@ find_package(Git REQUIRED)
 find_package(OpenGL REQUIRED)
 
 if(WIN32)
-    find_package(GLEW REQUIRED)
+    find_package(GLEW REQUIRED CONFIG)
     add_definitions(-DHAVE_GLEW # needs to be investigated if -DHAVE_GLEW should be added to any INTERFACE
         -DNOMINMAX # don't define min, max in windows.h
         -D_USE_MATH_DEFINES # define math constants in math.h
