@@ -11,7 +11,7 @@ do
         echo "cakepkg error with package $package"
         break
     fi
-    #echo "cakepkg INSTALL $package"
 done
 
+cake .
 

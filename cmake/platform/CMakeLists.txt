@@ -3,12 +3,15 @@ find_package(Boost REQUIRED)
 add_definitions(-DBOOST_ALL_NO_LIB)
 
 # compatibility with the CMake distro FindJPEG.cmake
-if(NOT TARGET JPEG::JPEG)
-  add_library(JPEG::JPEG UNKNOWN IMPORTED)
-  set_target_properties(JPEG::JPEG PROPERTIES
-    IMPORTED_LOCATION "${JPEG_LIBRARY}"
-    INTERFACE_INCLUDE_DIRECTORIES "${JPEG_INCLUDE_DIR}")
-endif()
+macro(find_package_jpeg)
+  find_package(JPEG REQUIRED)
+  if(NOT TARGET JPEG::JPEG)
+    add_library(JPEG::JPEG UNKNOWN IMPORTED)
+    set_target_properties(JPEG::JPEG PROPERTIES
+      IMPORTED_LOCATION "${JPEG_LIBRARIES}"
+      INTERFACE_INCLUDE_DIRECTORIES "${JPEG_INCLUDE_DIR}")
+  endif()
+endmacro()
 
 set(platform ${PROJECT_SOURCE_DIR}/platform)
 set(include ${PROJECT_SOURCE_DIR}/include)
@@ -86,7 +89,7 @@ if(platform_lib STREQUAL "ios" AND host STREQUAL "ios")
 endif()
 if(platform_lib STREQUAL "linux")
   find_package(PNG REQUIRED)
-  find_package(JPEG REQUIRED)
+  find_package_jpeg()
   find_package(nunicode REQUIRED)
   set(sources
         ${platform}/default/log_stderr.cpp
@@ -104,7 +107,7 @@ if(platform_lib STREQUAL "linux")
 endif()
 if(platform_lib STREQUAL "android" AND host STREQUAL "android")
   find_package(PNG REQUIRED)
-  find_package(JPEG REQUIRED)
+  find_package_jpeg()
   find_package(nunicode REQUIRED)
   set(sources
     ${platform}/android/log_android.cpp
@@ -119,9 +122,9 @@ if(platform_lib STREQUAL "android" AND host STREQUAL "android")
   set(deps PNG JPEG::JPEG libuv nunicode::nu Boost)
   set(include_dirs PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 endif()
-if(platform_lib STREQUAL "windows" AND host STREQUAL "windows")
+if(platform_lib STREQUAL "windows")
   find_package(PNG REQUIRED)
-  find_package(JPEG REQUIRED)
+  find_package_jpeg()
   find_package(nunicode REQUIRED)
   set(sources
         ${platform}/default/log_stderr.cpp
