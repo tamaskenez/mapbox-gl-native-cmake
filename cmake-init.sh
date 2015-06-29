@@ -5,7 +5,7 @@ if test ! -f "$CAKE_ROOT/Cake.cmake" ; then
     git clone https://github.com/tamaskenez/cake ${CAKE_ROOT}
 fi
 
-for package in ZLIB PNG OpenSSL CURL glfw3 GLEW libuv libjpeg libzip sqlite3 #nunicode
+for package in ZLIB PNG OpenSSL CURL glfw3 GLEW libuv libjpeg libzip sqlite3 nunicode
 do
     if ! cakepkg INSTALL $package; then
         echo "cakepkg error with package $package"
