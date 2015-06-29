@@ -51,6 +51,10 @@ macro(find_package_try_config_first)
     find_package(${_FPTCF_ARGV} NO_MODULE QUIET)
 
     if(${_FPTCF_package_name}_DIR)
+        if(FPTCF_VERBOSE)
+            message(STATUS "[FPTCF] ${_FPTCF_package_name} config module has been found.")
+            message(STATUS "[FPTFC] ${_FPTCF_package_name}_DIR: ${${_FPTCF_package_name}_DIR}")
+        endif()
         # The config module has been found ...
         if(NOT ${_FPTCF_package_name}_FOUND AND
             NOT ${_FPTCF_package_name_upper}_FOUND
@@ -60,16 +64,27 @@ macro(find_package_try_config_first)
             # module has indeed been found). Instead, if the original find_package
             # call was not QUIET then repeat the call without QUIET and with optional
             # REQUIRED to display the required error messages.
+            if(FPTCF_VERBOSE)
+                message(STATUS "[FPTCF] But the package has been considered NOT FOUND.")
+            endif()
             if(NOT ${_FPTCF_package_name}_QUIETLY OR ${_FPTCF_package_name}_FIND_REQUIRED)
                 if(${_FPTCF_package_name}_FIND_REQUIRED)
                     list(APPEND _FPTCF_ARGV REQUIRED)
                 endif()
                 find_package(${_FPTCF_ARGV} NO_MODULE)
             endif()
+        else()
+            if(FPTCF_VERBOSE)
+                message(STATUS "[FPTCF] And the package has also been found.")
+            endif()
         endif()
     else()
         # Config module has not been found
         # Fall back to the official find-module
+        if(FPTCF_VERBOSE)
+            message(STATUS "[FPTCF] ${_FPTCF_package_name} config module has not been found.")
+            message(STATUS "[FPTCF] Falling-back to find module.")
+        endif()
         include("${CMAKE_ROOT}/Modules/${_FPTCF_find_module_filename}")
     endif()
 endmacro()
